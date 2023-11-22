@@ -6,16 +6,19 @@ import { GetPlanetStar } from '../utils/ServicesApi';
 export function Main({ children }: { children: React.ReactNode }) {
   const [apiData, setApiData] = useState<TypeResult[]>([]);
   const [filterData, setDataFilter] = useState<TypeResult[]>([]);
+  const columnState = ['population', 'diameter', 'orbital_period',
+    'rotation_period', 'surface_water'];
 
+  const [columnInfo] = useState(columnState);
   const [nome, setName] = useState('');
 
   const INITIAL_FILTER_INPUTS = {
-    column: 'population',
-    comparison: 'maior que',
-    value: '0',
+    column: '',
+    comparison: '',
+    value: '',
   };
 
-  const [filterInputs, setFilterInputs] = useState<FilterType>(INITIAL_FILTER_INPUTS);
+  const [filterInputs, setFilterInputs] = useState<FilterType[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,25 +38,26 @@ export function Main({ children }: { children: React.ReactNode }) {
   const getApi = (data: TypeResult[]) => {
     setApiData(data);
   };
-
-  const filterApiByInputs = (
-    api: TypeResult[],
-    { column, comparison, value } = INITIAL_FILTER_INPUTS,
-  ) => {
-    switch (comparison) {
-      case 'maior que':
-        return setDataFilter(api
-          .filter((planet) => Number(planet[column]) > Number(value)));
-      case 'menor que':
-        return setDataFilter(api
-          .filter((planet) => Number(planet[column]) < Number(value)));
-      case 'igual a':
-        return setDataFilter(api
-          .filter((planet) => Number(planet[column]) === Number(value)));
-      default:
-        return setDataFilter(api);
-    }
-  };
+  useEffect(() => {
+    const adjustApiData = () => {
+      const apiSave = apiData.filter((planet) => (
+        filterInputs.every(({ column, comparison, value }) => {
+          switch (comparison) {
+            case 'maior que':
+              return Number(planet[column]) > Number(value);
+            case 'menor que':
+              return Number(planet[column]) < Number(value);
+            case 'igual a':
+              return Number(planet[column]) === Number(value);
+            default:
+              return planet;
+          }
+        })
+      ));
+      setDataFilter(apiSave);
+    };
+    adjustApiData();
+  }, [filterInputs]);
 
   return (
     <RootContext.Provider
@@ -65,7 +69,7 @@ export function Main({ children }: { children: React.ReactNode }) {
         setFilterInputs,
         nome,
         setName,
-        filterApiByInputs,
+        columnInfo,
       } }
     >
       {children}

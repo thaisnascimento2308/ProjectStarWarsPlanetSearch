@@ -1,5 +1,5 @@
 export type TypePlanet = { results: [{ name: string }] };
-
+export type ColumnDataType = string[];
 export type TypeResult = { [y:string]: string | string[], name: string };
 
 export type FilterType = {

@@ -1,15 +1,15 @@
 import { createContext } from 'react';
-import { FilterType, TypeResult } from '../types';
+import { FilterType, TypeResult, ColumnDataType } from '../types';
 
 export type ContextType = {
   apiData: TypeResult[],
   getApi: (data: TypeResult[]) => void,
   filterData: TypeResult[],
-  filterInputs: FilterType,
-  setFilterInputs: React.Dispatch<React.SetStateAction<FilterType>>,
+  filterInputs: FilterType[],
+  setFilterInputs: React.Dispatch<React.SetStateAction<FilterType[]>>,
   nome: string,
   setName: React.Dispatch<React.SetStateAction<string>>
-  filterApiByInputs: (api:TypeResult[], inputData:FilterType) => void,
+  columnInfo: ColumnDataType
 };
 
 export const RootContext = createContext<ContextType>({} as ContextType);
