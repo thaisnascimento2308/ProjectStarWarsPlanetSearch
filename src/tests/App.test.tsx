@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import App from '../App';
-import {vi} from 'vitest'
+import { vi } from 'vitest'
 
 describe('Teste do componente <App />', () => {
   beforeEach(() => {

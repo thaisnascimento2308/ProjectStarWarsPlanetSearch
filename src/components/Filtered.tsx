@@ -5,20 +5,19 @@ import { FilterType } from '../types';
 export function Filter() {
   const { nome, setName, filterData,
     setFilterInputs, filterApiByInputs } = useContext(RootContext);
-
   const columnData = ['population', 'diameter', 'orbital_period',
     'rotation_period', 'surface_water'];
-
   const comparisonData = ['maior que', 'menor que', 'igual a'];
-
   const INITIAL_FILTER_INPUTS = {
     column: 'population',
     comparison: 'maior que',
     value: '0',
   };
-
+  const validateInputs = (data:string) => {
+    setColumnInfo(columnInfo.filter((column) => column !== data));
+  };
   const [inputData, setInputData] = useState<FilterType>(INITIAL_FILTER_INPUTS);
-
+  const [columnInfo, setColumnInfo] = useState(columnData);
   function handleChange(
     { target }: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) {
@@ -26,8 +25,9 @@ export function Filter() {
     setInputData({ ...inputData, [name]: value });
     console.log(inputData);
   }
-
   const handleClick = () => {
+    const { column } = inputData;
+    validateInputs(column);
     setFilterInputs(inputData);
     filterApiByInputs(filterData, inputData);
   };
@@ -47,8 +47,14 @@ export function Filter() {
         onChange={ (event) => handleChange(event) }
         data-testid="column-filter"
       >
-        { columnData.map((column) => (
-          <option key={ column } value={ column }>{ column }</option>)) }
+        { columnInfo.map((column) => (
+          <option
+            key={ column }
+            value={ column }
+          >
+            { column }
+
+          </option>)) }
       </select>
 
       <select
