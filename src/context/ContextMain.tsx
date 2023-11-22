@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FilterType, TypeResult } from '../types';
 import { RootContext } from './ContextApi';
-import { GetPlanetStar } from '../services/ServicesApi';
+import { GetPlanetStar } from '../utils/ServicesApi';
 
 export function Main({ children }: { children: React.ReactNode }) {
   const [apiData, setApiData] = useState<TypeResult[]>([]);
@@ -57,19 +57,16 @@ export function Main({ children }: { children: React.ReactNode }) {
 
   return (
     <RootContext.Provider
-      value={
-        {
-          apiData,
-          getApi,
-          filterData,
-          filterInputs,
-          setFilterInputs,
-          nome,
-          setName,
-          filterApiByInputs,
-          // eslint-disable-next-line @typescript-eslint/indent
-      }
-      }
+      value={ {
+        apiData,
+        getApi,
+        filterData,
+        filterInputs,
+        setFilterInputs,
+        nome,
+        setName,
+        filterApiByInputs,
+      } }
     >
       {children}
     </RootContext.Provider>
