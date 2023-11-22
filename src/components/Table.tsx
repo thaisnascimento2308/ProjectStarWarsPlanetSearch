@@ -10,18 +10,19 @@ function Table() {
   const listPlanet = filterData.map((world) => (
     <tr key={ id++ }>
       <td>{world.name}</td>
-      <td>{world.rotation_period}</td>
-      <td>{world.orbital_period}</td>
-      <td>{world.diameter}</td>
-      <td>{world.climate}</td>
-      <td>{world.gravity}</td>
-      <td>{world.terrain}</td>
-      <td>{world.surface_water}</td>
-      <td>{world.population}</td>
-      <td>{world.films}</td>
-      <td>{world.created}</td>
-      <td>{world.edited}</td>
-      <td>{world.url}</td>
+      <td data-testid="planet-name">{world.name}</td>
+      <td data-testid="rotation">{world.rotation_period}</td>
+      <td data-testid="orbital">{world.orbital_period}</td>
+      <td data-testid="diameter">{world.diameter}</td>
+      <td data-testid="climate">{world.climate}</td>
+      <td data-testid="gravity">{world.gravity}</td>
+      <td data-testid="terrain">{world.terrain}</td>
+      <td data-testid="surface_water">{world.surface_water}</td>
+      <td data-testid="population">{world.population}</td>
+      <td data-testid="films">{world.films}</td>
+      <td data-testid="created">{world.created}</td>
+      <td data-testid="edited">{world.edited}</td>
+      <td data-testid="url">{world.url}</td>
     </tr>
   ));
 
@@ -29,7 +30,7 @@ function Table() {
     <>
       <Filter />
       <table>
-        <thead>
+        <thead aria-label="thead">
           <tr>
             <th>Name</th>
             <th>Rotation Period</th>
@@ -46,7 +47,7 @@ function Table() {
             <th>URL</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody aria-label="tbody">
           { listPlanet }
         </tbody>
       </table>

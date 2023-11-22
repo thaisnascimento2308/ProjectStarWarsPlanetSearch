@@ -8,12 +8,17 @@ export function Filter() {
     comparison: 'maior que',
     value: '0',
   };
-  const { nome, setName, columnInfo, apiData,
+  const INITIAL_ORDER = {
+    column: 'population',
+    sort: 'ASC',
+  };
+
+  const { nome, setName, columnInfo, changeOrder,
     filterInputs, setFilterInputs } = useContext(RootContext);
   const [checkFilters, setCheckFilters] = useState(false);
   const [columnData, setColumnData] = useState(columnInfo);
   const [inputData, setInputData] = useState<FilterType>(INITIAL_FILTER_INPUTS);
-
+  const [orderInfo, setOrderInfo] = useState(INITIAL_ORDER);
   const comparisonData = ['maior que', 'menor que', 'igual a'];
 
   useEffect(() => {
@@ -49,11 +54,23 @@ export function Filter() {
     setFilterInputs([]);
     setColumnData(columnInfo);
   }
+  const setOrder = (column:string, sort:string) => {
+    changeOrder(column, sort);
+  };
+
+  const changeInputOrder = (
+    { target }: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = target;
+    setOrderInfo({ ...orderInfo, [name]: value });
+  };
 
   return (
     <>
+      <label htmlFor="name">Filtrar por nome</label>
       <input
         type="text"
+        id="name"
         name="nome"
         onChange={ ({ target }) => setName(target.value) }
         value={ nome }
@@ -91,7 +108,45 @@ export function Filter() {
         onChange={ (event) => handleChange(event) }
         data-testid="value-filter"
       />
+      <select
+        data-testid="column-sort"
+        name="column"
+        onChange={ (event) => changeInputOrder(event) }
+      >
+        <option value="population">Population</option>
+        <option value="orbital_period">Orbital Period</option>
+        <option value="diameter">Diameter</option>
+        <option value="rotation_period">Rotation period</option>
+        <option value="surface_water">Surface Water</option>
+      </select>
 
+      <label htmlFor="asc">Ascendente</label>
+      <input
+        type="radio"
+        name="sort"
+        value="ASC"
+        onChange={ (event) => changeInputOrder(event) }
+        data-testid="column-sort-input-asc"
+        id="asc"
+      />
+
+      <label htmlFor="desc">Descendente</label>
+      <input
+        type="radio"
+        name="sort"
+        value="DESC"
+        onChange={ (event) => changeInputOrder(event) }
+        data-testid="column-sort-input-desc"
+        id="desc"
+      />
+
+      <button
+        onClick={ () => setOrder(orderInfo.column, orderInfo.sort) }
+        data-testid="column-sort-button"
+      >
+        Ajustar ordenação
+
+      </button>
       <button
         data-testid="button-filter"
         onClick={ handleClick }
@@ -101,7 +156,7 @@ export function Filter() {
       </button>
       { checkFilters && filterInputs.map((input) => (
         <div key={ input.value } data-testid="filter">
-          <p>
+          <p aria-label="filter-text">
             {`${input.column} ${input.comparison} ${input.value}`}
           </p>
           <button

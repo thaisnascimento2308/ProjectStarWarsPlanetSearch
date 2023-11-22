@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FilterType, TypeResult } from '../types';
+import { FilterType, OrderType, TypeResult } from '../types';
 import { RootContext } from './ContextApi';
 import { GetPlanetStar } from '../utils/ServicesApi';
 
@@ -8,17 +8,22 @@ export function Main({ children }: { children: React.ReactNode }) {
   const [filterData, setDataFilter] = useState<TypeResult[]>([]);
   const columnState = ['population', 'diameter', 'orbital_period',
     'rotation_period', 'surface_water'];
-
   const [columnInfo] = useState(columnState);
   const [nome, setName] = useState('');
-
-  const INITIAL_FILTER_INPUTS = {
-    column: '',
-    comparison: '',
-    value: '',
-  };
-
   const [filterInputs, setFilterInputs] = useState<FilterType[]>([]);
+
+  const INITIAL_ORDER = {
+    order: {
+      column: 'population',
+      sort: 'ASC',
+    },
+  };
+  const [orderData, setOrderData] = useState<OrderType>(INITIAL_ORDER);
+
+  const changeOrder = (column:string, order:string) => {
+    const newOrder = { order: { column, sort: order } };
+    setOrderData(newOrder);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,6 +43,7 @@ export function Main({ children }: { children: React.ReactNode }) {
   const getApi = (data: TypeResult[]) => {
     setApiData(data);
   };
+
   useEffect(() => {
     const adjustApiData = () => {
       const apiSave = apiData.filter((planet) => (
@@ -58,7 +64,24 @@ export function Main({ children }: { children: React.ReactNode }) {
     };
     adjustApiData();
   }, [filterInputs]);
+  useEffect(() => {
+    const { column, sort } = orderData.order;
+    const recoveredApi = filterData.length > 0 ? filterData : apiData;
+    const removedUnknow = recoveredApi.filter((planet) => planet[column] !== 'unknown');
 
+    const sortedApi = removedUnknow.sort((a, b) => {
+      switch (sort) {
+        case 'ASC':
+          return Number(a[column]) - Number(b[column]);
+        case 'DESC':
+          return Number(b[column]) - Number(a[column]);
+        default:
+          return 0;
+      }
+    });
+    setApiData([...sortedApi,
+      ...apiData.filter((planet) => planet[column] === 'unknown')]);
+  }, [orderData.order]);
   return (
     <RootContext.Provider
       value={ {
@@ -70,6 +93,8 @@ export function Main({ children }: { children: React.ReactNode }) {
         nome,
         setName,
         columnInfo,
+        orderData,
+        changeOrder,
       } }
     >
       {children}

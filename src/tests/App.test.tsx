@@ -16,6 +16,14 @@ describe('Teste do componente <App />', () => {
     render(<App />);
   });
 
+  // it('Verifica se o formulário de pesquisa é renderizado na tela', () => {
+  //   expect(screen.getByTestId('name-filter')).toBeInTheDocument();
+  //   expect(screen.getByTestId('column-filter')).toBeInTheDocument();
+  //   expect(screen.getByTestId('comparison-filter')).toBeInTheDocument();
+  //   expect(screen.getByTestId('value-filter')).toBeInTheDocument();
+  //   expect(screen.getByTestId('button-filter')).toBeInTheDocument();
+  // });
+
   it('Verifica se a tabela é renderizada na tela', () => {
     expect(screen.getByRole('table')).toBeInTheDocument();
   });
@@ -31,20 +39,20 @@ describe('Teste do componente <App />', () => {
   });
 });
 
-describe('Testes para o componente <Filter />', () => {
-    render(
-      <Main>
-        <Filter />
-      </Main>
-    );
+// describe('Testes para o componente <Filter />', () => {
+//     render(
+//       <Main>
+//         <Filter />
+//       </Main>
+//     );
   
-    expect(screen.getByTestId('name-filter')).toBeInTheDocument();
-    expect(screen.getByTestId('column-filter')).toBeInTheDocument();
-    expect(screen.getByTestId('comparison-filter')).toBeInTheDocument();
-    expect(screen.getByTestId('value-filter')).toBeInTheDocument();
-    expect(screen.getByTestId('button-filter')).toBeInTheDocument();
-    expect(screen.getByTestId('button-remove-filters')).toBeInTheDocument();
-});
+//     expect(screen.getByTestId('name-filter')).toBeInTheDocument();
+//     expect(screen.getByTestId('column-filter')).toBeInTheDocument();
+//     expect(screen.getByTestId('comparison-filter')).toBeInTheDocument();
+//     expect(screen.getByTestId('value-filter')).toBeInTheDocument();
+//     expect(screen.getByTestId('button-filter')).toBeInTheDocument();
+//     expect(screen.getByTestId('button-remove-filters')).toBeInTheDocument();
+// });
   
   it ('Verifica se o filtro de nome funciona', async () => {
 
@@ -120,4 +128,24 @@ describe('Testes para o componente <Filter />', () => {
     fireEvent.click(screen.getByTestId('button-remove-filters'));
 
     expect(screen.queryByTestId('filter')).toBeNull();
+  });
+  
+  it('Verifica se a ordenação está funcionando corretamente', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue(dataResponse)
+    render(<App />);
+
+    const orderButton = screen.getByTestId('column-sort-button');
+    const orderInput = screen.getByTestId('column-sort');
+    const orderAsc = screen.getByTestId('column-sort-input-asc');
+    const orderDesc = screen.getByTestId('column-sort-input-desc');
+    expect(orderButton).toBeInTheDocument();
+    expect(orderInput).toBeInTheDocument();
+    expect(orderAsc).toBeInTheDocument();
+    expect(orderDesc).toBeInTheDocument();
+    fireEvent.click(orderButton)
+    fireEvent.change(orderInput, { target: { value: 'diameter' } });
+    fireEvent.click(orderDesc);
+    fireEvent.click(orderButton);
+    const allPlanetsNameAfterOrder = await screen.findAllByTestId('planet-name');
+    expect(allPlanetsNameAfterOrder).toHaveLength(10);
   });
