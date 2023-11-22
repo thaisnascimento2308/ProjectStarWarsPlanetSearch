@@ -3,18 +3,17 @@ import { render, screen, fireEvent, waitFor  } from '@testing-library/react';
 import App from '../App';
 import { Main } from '../context/ContextMain';
 import { Filter } from '../components/Filtered';
+import { Data } from '../utils/data';
+import { vi } from 'vitest'
+
+const dataResponse = {
+  ok: true,
+  json: async () => Data,
+} as Response;
 
 describe('Teste do componente <App />', () => {
   beforeEach(() => {
     render(<App />);
-  });
-
-  it('Verifica se o formulário de pesquisa é renderizado na tela', () => {
-    expect(screen.getByTestId('name-filter')).toBeInTheDocument();
-    expect(screen.getByTestId('column-filter')).toBeInTheDocument();
-    expect(screen.getByTestId('comparison-filter')).toBeInTheDocument();
-    expect(screen.getByTestId('value-filter')).toBeInTheDocument();
-    expect(screen.getByTestId('button-filter')).toBeInTheDocument();
   });
 
   it('Verifica se a tabela é renderizada na tela', () => {
@@ -45,8 +44,27 @@ describe('Testes para o componente <Filter />', () => {
     expect(screen.getByTestId('value-filter')).toBeInTheDocument();
     expect(screen.getByTestId('button-filter')).toBeInTheDocument();
     expect(screen.getByTestId('button-remove-filters')).toBeInTheDocument();
-  });
+});
+  
+  it ('Verifica se o filtro de nome funciona', async () => {
 
+    vi.spyOn(global, 'fetch').mockResolvedValue(dataResponse)
+
+    render(<App />);
+
+    const inputName = screen.getByLabelText(/filtrar por nome/i);
+
+    fireEvent.change(inputName, { target: { value: 'Tatooine' } });
+
+    const planetNames = ['Tatooine'];
+
+    const allPlanetsName = await screen.findAllByTestId('planet-name');
+    expect(allPlanetsName).toHaveLength(1);
+
+    allPlanetsName.forEach((planet, index) => {
+      expect(planet).toHaveTextContent(planetNames[index])
+    });
+  });
   it('deve adicionar um filtro corretamente', async () => {
     render(
       <Main>
