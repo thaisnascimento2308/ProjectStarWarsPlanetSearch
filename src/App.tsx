@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import Table from './components/Table';
+import Filter from './components/Filtered';
 import ApiContextResponse from './context/ContextApi';
 import getPlanets from './services/ServicesApi';
 import { Planet } from './types';
@@ -23,7 +23,7 @@ function App() {
   return (
     <ApiContextResponse.Provider value={ { data: planets || [] } }>
       <div>
-        <Table />
+        <Filter />
       </div>
     </ApiContextResponse.Provider>
   );

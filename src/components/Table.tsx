@@ -1,11 +1,11 @@
 import { Planet } from '../types';
 
 type TableProps = {
-  filter: Planet[];
+  filterResult: Planet[];
 };
 
-function Table({ filter }: TableProps) {
-  const planets = filter;
+function Table({ filterResult }: TableProps) {
+  const planets = filterResult;
 
   return (
     <div>

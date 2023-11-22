@@ -1,6 +1,7 @@
 export type ApiType = {
   data: object[];
   error?: string;
+  listNew?: object[];
 };
 
 export type Planet = {
@@ -17,4 +18,10 @@ export type Planet = {
   created: string;
   edited: string;
   url: string;
+};
+
+export type TypeFilter = {
+  itemOption: string;
+  itemOperator: string;
+  value: number | string;
 };
