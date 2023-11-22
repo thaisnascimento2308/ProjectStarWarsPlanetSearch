@@ -1,109 +1,83 @@
-import { useContext, useEffect, useState } from 'react';
-import ApiContextResponse from '../context/ContextApi';
-import Table from './Table';
-import { useFilter, optionFilter } from '../services/Hook';
-import { Planet } from '../types';
+import { useContext, useState } from 'react';
+import { RootContext } from '../context/ContextApi';
+import { FilterType } from '../types';
 
-const option1 = 'population';
-const operator = 'maior que';
+export function Filter() {
+  const { nome, setName, filterData,
+    setFilterInputs, filterApiByInputs } = useContext(RootContext);
 
-function Filter() {
-  const planets = useContext(ApiContextResponse).data;
-  const [bringText, useText] = useState('');
-  const [value, setValue] = useState(0);
-  const [finalResults, setFinalResults] = useState([]);
+  const columnData = ['population', 'diameter', 'orbital_period',
+    'rotation_period', 'surface_water'];
 
-  const Items = 'name';
+  const comparisonData = ['maior que', 'menor que', 'igual a'];
 
-  const filterResult = useFilter(bringText, Items, planets);
-  const optionFilterResults = optionFilter(option1, operator, value, planets);
-
-  useEffect(() => {
-    setFinalResults(filterResult);
-  }, [filterResult]);
-
-  const HandleChange = (event: any) => {
-    useText(event.target.value);
-    setFinalResults(filterResult);
+  const INITIAL_FILTER_INPUTS = {
+    column: 'population',
+    comparison: 'maior que',
+    value: '0',
   };
 
-  const HandleNumber = (event: any) => {
-    setValue(event.target.value);
-  };
+  const [inputData, setInputData] = useState<FilterType>(INITIAL_FILTER_INPUTS);
 
-  const HandleColun = (event: any) => {
-    option1 = event.target.value;
-  };
-
-  const HandleOperator = (event: any) => {
-    operator = event.target.value;
-  };
-
-  function HandleClick() {
-    setFinalResults(optionFilterResults);
+  function handleChange(
+    { target }: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) {
+    const { name, value } = target;
+    setInputData({ ...inputData, [name]: value });
+    console.log(inputData);
   }
 
+  const handleClick = () => {
+    setFilterInputs(inputData);
+    filterApiByInputs(filterData, inputData);
+  };
+
   return (
-    <div>
-      <div>
-        <input
-          type="text"
-          name="value"
-          id="search"
-          data-testid="name-filter"
-          onChange={ HandleChange }
-        />
-      </div>
-      <div className="filter">
-        <div className="filter__sort">
-          <p>Coluna</p>
-          <select
-            name="sort"
-            id="sort"
-            onChange={ HandleColun }
-            data-testid="column-filter"
-          >
-            <option value="population">population</option>
-            <option value="orbital_period">orbital_period</option>
-            <option value="diameter">diameter</option>
-            <option value="rotation_period">rotation_period</option>
-            <option value="surface_water">surface_water</option>
-          </select>
-        </div>
-        <div className="filter__size">
-          <p>Operador</p>
-          <select
-            name="size"
-            id="size"
-            onChange={ HandleOperator }
-            data-testid="comparison-filter"
-          >
-            <option value="maior que">maior que</option>
-            <option value="menor que">menor que</option>
-            <option value="igual a">igual a</option>
-          </select>
-        </div>
-        <div>
-          <p>Valor</p>
-          <input
-            type="number"
-            name="value"
-            id="value"
-            data-testid="value-filter"
-            onChange={ HandleNumber }
-            value={ value }
-          />
-        </div>
-        <button
-          type="button"
-          data-testid="button-filter"
-          onClick={ HandleClick }
-        >
-          FILTRAR
-        </button>
-      </div>
-      <Table filterResult={ finalResults as Planet[] } />
-    </div>
+    <>
+      <input
+        type="text"
+        name="nome"
+        onChange={ ({ target }) => setName(target.value) }
+        value={ nome }
+        data-testid="name-filter"
+      />
+
+      <select
+        name="column"
+        onChange={ (event) => handleChange(event) }
+        data-testid="column-filter"
+      >
+        { columnData.map((column) => (
+          <option key={ column } value={ column }>{ column }</option>)) }
+      </select>
+
+      <select
+        onChange={ (event) => handleChange(event) }
+        name="comparison"
+        data-testid="comparison-filter"
+      >
+        { comparisonData.map((comparison) => (
+          <option key={ comparison } value={ comparison }>{ comparison }</option>))}
+      </select>
+
+      <input
+        type="number"
+        name="value"
+        value={ inputData.value }
+        onChange={ (event) => handleChange(event) }
+        data-testid="value-filter"
+      />
+
+      <button
+        data-testid="button-filter"
+        onClick={ handleClick }
+      >
+        Adicionar filtro
+
+      </button>
+    </>
+
   );
 }
+
 export default Filter;
