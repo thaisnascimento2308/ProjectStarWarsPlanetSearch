@@ -1,7 +1,8 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor  } from '@testing-library/react';
 import App from '../App';
-import { vi } from 'vitest'
+import { Main } from '../context/ContextMain';
+import { Filter } from '../components/Filtered';
 
 describe('Teste do componente <App />', () => {
   beforeEach(() => {
@@ -30,3 +31,75 @@ describe('Teste do componente <App />', () => {
     });
   });
 });
+
+describe('Testes para o componente <Filter />', () => {
+    render(
+      <Main>
+        <Filter />
+      </Main>
+    );
+  
+    expect(screen.getByTestId('name-filter')).toBeInTheDocument();
+    expect(screen.getByTestId('column-filter')).toBeInTheDocument();
+    expect(screen.getByTestId('comparison-filter')).toBeInTheDocument();
+    expect(screen.getByTestId('value-filter')).toBeInTheDocument();
+    expect(screen.getByTestId('button-filter')).toBeInTheDocument();
+    expect(screen.getByTestId('button-remove-filters')).toBeInTheDocument();
+  });
+
+  it('deve adicionar um filtro corretamente', async () => {
+    render(
+      <Main>
+        <Filter />
+      </Main>
+    );
+
+    fireEvent.change(screen.getByTestId('column-filter'), { target: { value: 'population' } });
+    fireEvent.change(screen.getByTestId('comparison-filter'), { target: { value: 'maior que' } });
+    fireEvent.change(screen.getByTestId('value-filter'), { target: { value: '1000000' } });
+    fireEvent.click(screen.getByTestId('button-filter'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('filter')).toBeInTheDocument();
+      expect(screen.getByText('population maior que 1000000')).toBeInTheDocument();
+    });
+  });
+
+  it('deve remover um filtro corretamente', async () => {
+    render(
+      <Main>
+        <Filter />
+      </Main>
+    );
+
+    fireEvent.change(screen.getByTestId('column-filter'), { target: { value: 'population' } });
+    fireEvent.change(screen.getByTestId('comparison-filter'), { target: { value: 'maior que' } });
+    fireEvent.change(screen.getByTestId('value-filter'), { target: { value: '1000000' } });
+    fireEvent.click(screen.getByTestId('button-filter'));
+
+    fireEvent.click(screen.getByText('Remove um filtro'));
+
+    expect(screen.queryByTestId('filter')).toBeNull();
+  });
+
+  it('deve remover todos os filtros corretamente', async () => {
+    render(
+      <Main>
+        <Filter />
+      </Main>
+    );
+
+    fireEvent.change(screen.getByTestId('column-filter'), { target: { value: 'population' } });
+    fireEvent.change(screen.getByTestId('comparison-filter'), { target: { value: 'maior que' } });
+    fireEvent.change(screen.getByTestId('value-filter'), { target: { value: '1000000' } });
+    fireEvent.click(screen.getByTestId('button-filter'));
+
+    fireEvent.change(screen.getByTestId('column-filter'), { target: { value: 'diameter' } });
+    fireEvent.change(screen.getByTestId('comparison-filter'), { target: { value: 'menor que' } });
+    fireEvent.change(screen.getByTestId('value-filter'), { target: { value: '5000' } });
+    fireEvent.click(screen.getByTestId('button-filter'));
+
+    fireEvent.click(screen.getByTestId('button-remove-filters'));
+
+    expect(screen.queryByTestId('filter')).toBeNull();
+  });
