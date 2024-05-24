@@ -1,10 +1,27 @@
-# :construction: README em construção ! :construction:
-<!-- Olá, Tryber!
-Esse é apenas um arquivo inicial para o README do seu projeto.
-É essencial que você preencha esse documento por conta própria, ok?
-Não deixe de usar nossas dicas de escrita de README de projetos, e deixe sua criatividade brilhar!
-:warning: IMPORTANTE: você precisa deixar nítido:
-- quais arquivos/pastas foram desenvolvidos por você; 
-- quais arquivos/pastas foram desenvolvidos por outra pessoa estudante;
-- quais arquivos/pastas foram desenvolvidos pela Trybe.
--->
+# Projeto Star Wars Planets Search!
+
+![img](projectIntro.gif)
+
+Este projeto fez parte do currículo da Trybe, desenvolvido para testar meus conhecimentos em React TypeScript, Context API, filtragem e exibição de dados, bem como testes.
+
+Neste projeto, você pode pesquisar e filtrar planetas de acordo com suas necessidades.
+
+### Instalação
+Siga estas instruções.
+
+Clone o repositório em sua máquina.
+
+Navegue até o diretório do projeto.
+
+Execute npm install para instalar as dependências necessárias.
+
+### Executando o Projeto
+Para executar o projeto, certifique-se de que a porta 3000 esteja livre e execute o seguinte comando:
+
+npm run dev
+
+## Autores
+
+Trabalho inicial - Escola Trybe
+
+Desenvolvimento adicional - Thais Do Nascimento Ferreira
