@@ -1,7 +1,5 @@
 # Projeto Star Wars Planets Search!
 
-![img](projectIntro.gif)
-
 Este projeto fez parte do currículo da Trybe, desenvolvido para testar meus conhecimentos em React TypeScript, Context API, filtragem e exibição de dados, bem como testes.
 
 Neste projeto, você pode pesquisar e filtrar planetas de acordo com suas necessidades.
